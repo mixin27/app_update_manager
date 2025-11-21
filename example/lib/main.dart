@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:app_update_manager/app_update_manager.dart';
 import 'package:flutter/material.dart';
 
@@ -8,13 +10,17 @@ void main() async {
   await AppUpdateManager.initialize(
     config: UpdateConfig(
       playStoreId: 'dev.mixin27.mmcalendar',
-      appStoreId: '123456789',
-      customUpdateUrl: 'https://api.yourapp.com/version',
+      // appStoreId: '123456789',
+      customUpdateUrl: 'http://192.168.100.42:8000/version/check',
       strategy: UpdateStrategy.flexible,
       enableBackgroundCheck: true,
       backgroundCheckInterval: 24,
       enableCaching: true,
       wifiOnly: false,
+      enableAnalytics: true,
+      onAnalyticsEvent: (event, data) {
+        log('Analytics Event: $event, Data: $data');
+      },
     ),
   );
 
@@ -84,7 +90,7 @@ class _HomePageState extends State<HomePage> {
           if (mounted) {
             await AppUpdateManager.checkAndShowUpdate(
               context: context,
-              useBottomSheet: false,
+              useBottomSheet: true,
             );
           }
         } else {
