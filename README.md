@@ -1,39 +1,328 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# App Update Manager
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+A comprehensive Flutter package for managing app updates across Play Store, App Store, and custom backends with flexible update strategies, background checks, and beautiful UI.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+✨ **Multi-Platform Support**
+- ✅ Android (Play Store with in-app updates)
+- ✅ iOS (App Store)
+- ✅ Custom backend API
+- ✅ Windows, macOS, Linux (custom updates)
 
-## Getting started
+🎯 **Update Strategies**
+- **Flexible Updates** - User can dismiss and update later
+- **Immediate Updates** - Blocks app usage until updated
+- **Optional Updates** - Shows notification but allows continued use
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+🎨 **Customizable UI**
+- Beautiful dialogs and bottom sheets
+- Fully customizable colors, text, and icons
+- Dark mode support
+- Material 3 design
 
-## Usage
+🚀 **Advanced Features**
+- Background update checks with WorkManager
+- Version caching to reduce API calls
+- Release notes display
+- File size information
+- Force updates for critical versions
+- Minimum supported version enforcement
+- Regional rollouts support
+- A/B testing capabilities
+- Analytics integration
+- Network connectivity handling (WiFi-only option)
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+## Installation
 
-```dart
-const like = 'sample';
+Add this to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  app_update_manager: ^1.0.0
 ```
 
-## Additional information
+### Platform-Specific Setup
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+#### Android
+
+Add to `android/app/src/main/AndroidManifest.xml`:
+
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+```
+
+#### iOS
+
+Add to `ios/Runner/Info.plist`:
+
+```xml
+<key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+</dict>
+```
+
+## Quick Start
+
+### Basic Usage
+
+```dart
+import 'package:app_update_manager/app_update_manager.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize
+  await AppUpdateManager.initialize(
+    config: UpdateConfig(
+      playStoreId: 'com.yourapp.package',
+      appStoreId: '123456789',
+      customUpdateUrl: 'https://api.yourapp.com/version',
+    ),
+  );
+
+  runApp(MyApp());
+}
+
+// Check for updates
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () async {
+            await AppUpdateManager.checkAndShowUpdate(
+              context: context,
+            );
+          },
+          child: Text('Check for Updates'),
+        ),
+      ),
+    );
+  }
+}
+```
+
+### Custom Backend API
+
+Your backend should return JSON in this format:
+
+```json
+{
+  "latest_version": "1.2.0",
+  "current_version": "1.0.0",
+  "release_notes": "Bug fixes and improvements",
+  "download_url": "https://...",
+  "is_forced": false,
+  "is_critical": false,
+  "minimum_supported_version": "1.0.0",
+  "file_size_bytes": 25600000,
+  "release_date": "2024-01-15T10:30:00Z"
+}
+```
+
+Query parameters sent to your API:
+- `platform` - Operating system (android, ios, etc.)
+- `current_version` - Current app version
+- `build_number` - Current build number
+- `package_name` - App package name
+- `region` - Region code (if configured)
+- `test_group` - A/B test group (if configured)
+
+### Custom UI
+
+```dart
+await AppUpdateManager.checkAndShowUpdate(
+  context: context,
+  useBottomSheet: true,
+  uiConfig: UpdateUIConfig(
+    title: 'New Version Available! 🎉',
+    message: 'Update to get the latest features',
+    updateButtonText: 'Update Now',
+    laterButtonText: 'Maybe Later',
+    primaryColor: Colors.purple,
+    showReleaseNotes: true,
+    showFileSize: true,
+    customIcon: Icon(Icons.rocket_launch),
+  ),
+);
+```
+
+### Background Checks
+
+```dart
+await AppUpdateManager.initialize(
+  config: UpdateConfig(
+    // ... other config
+    enableBackgroundCheck: true,
+    backgroundCheckInterval: 24, // hours
+    wifiOnly: true, // Only check on WiFi
+  ),
+);
+
+// Check if background update was found
+final hasUpdate = await AppUpdateManager.hasBackgroundUpdate();
+```
+
+### Force Updates
+
+```dart
+await AppUpdateManager.initialize(
+  config: UpdateConfig(
+    // ... other config
+    strategy: UpdateStrategy.immediate, // Force immediate update
+  ),
+);
+```
+
+### Analytics Integration
+
+```dart
+await AppUpdateManager.initialize(
+  config: UpdateConfig(
+    // ... other config
+    enableAnalytics: true,
+    onAnalyticsEvent: (event, data) {
+      // Send to your analytics service
+      FirebaseAnalytics.instance.logEvent(
+        name: 'app_update_${event.name}',
+        parameters: data,
+      );
+    },
+  ),
+);
+```
+
+## Configuration Options
+
+### UpdateConfig
+
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `playStoreId` | `String?` | Android package name | `null` |
+| `appStoreId` | `String?` | iOS app ID | `null` |
+| `customUpdateUrl` | `String?` | Custom API endpoint | `null` |
+| `customHeaders` | `Map<String, String>?` | HTTP headers for API | `null` |
+| `strategy` | `UpdateStrategy` | Update strategy | `flexible` |
+| `backgroundCheckInterval` | `int` | Hours between checks | `24` |
+| `enableBackgroundCheck` | `bool` | Enable background checking | `false` |
+| `showDialogAutomatically` | `bool` | Auto-show dialog | `true` |
+| `enableCaching` | `bool` | Cache version info | `true` |
+| `cacheDuration` | `int` | Cache duration (hours) | `6` |
+| `requestTimeout` | `int` | API timeout (seconds) | `30` |
+| `wifiOnly` | `bool` | Check only on WiFi | `false` |
+| `regionCode` | `String?` | Region for rollouts | `null` |
+| `testGroup` | `String?` | A/B test group | `null` |
+| `enableAnalytics` | `bool` | Enable analytics | `false` |
+
+### UpdateUIConfig
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `title` | `String?` | Dialog title |
+| `message` | `String?` | Dialog message |
+| `updateButtonText` | `String?` | Update button text |
+| `cancelButtonText` | `String?` | Cancel button text |
+| `laterButtonText` | `String?` | Later button text |
+| `backgroundColor` | `Color?` | Background color |
+| `primaryColor` | `Color?` | Primary color |
+| `titleStyle` | `TextStyle?` | Title text style |
+| `messageStyle` | `TextStyle?` | Message text style |
+| `showReleaseNotes` | `bool` | Show release notes |
+| `showFileSize` | `bool` | Show file size |
+| `customIcon` | `Widget?` | Custom icon widget |
+
+## API Reference
+
+### AppUpdateManager
+
+```dart
+// Initialize the manager
+static Future<void> initialize({required UpdateConfig config})
+
+// Check for updates
+static Future<UpdateInfo?> checkForUpdate()
+
+// Check and show update dialog
+static Future<bool> checkAndShowUpdate({
+  required BuildContext context,
+  UpdateUIConfig? uiConfig,
+  bool useBottomSheet = false,
+})
+
+// Get current version
+static Future<String> getCurrentVersion()
+
+// Clear cache
+static Future<void> clearCache()
+
+// Cancel background checks
+static Future<void> cancelBackgroundChecks()
+
+// Check for background update
+static Future<bool> hasBackgroundUpdate()
+```
+
+## Examples
+
+Check the `/example` folder for complete examples:
+
+- `basic_usage_example.dart` - Simple implementation
+- `custom_backend_example.dart` - Custom API integration
+- `advanced_usage_example.dart` - All features showcase
+
+## Testing
+
+```dart
+// For testing, you can mock update scenarios
+final testUpdateInfo = UpdateInfo(
+  latestVersion: AppVersion.parse('2.0.0'),
+  currentVersion: AppVersion.parse('1.0.0'),
+  releaseNotes: 'Test update',
+  isForced: false,
+);
+
+await showUpdateDialog(
+  context: context,
+  updateInfo: testUpdateInfo,
+);
+```
+
+## Troubleshooting
+
+**Android in-app update not working:**
+- Ensure your app is published on Play Store (internal testing track works)
+- The update must be available on Play Store
+- Test on a real device, not emulator
+
+**iOS App Store link not opening:**
+- Verify your App Store ID is correct
+- Ensure `url_launcher` can open App Store URLs
+
+**Background checks not working:**
+- Verify `workmanager` is properly initialized
+- Check Android battery optimization settings
+- iOS has strict background execution limits
+
+## Contributing
+
+Contributions are welcome! Please read our contributing guidelines and submit pull requests to our repository.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+For issues, feature requests, or questions:
+- Open an issue on GitHub
+- Check our FAQ in the wiki
+- Join our Discord community
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history.
