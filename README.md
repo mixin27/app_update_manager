@@ -320,8 +320,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 For issues, feature requests, or questions:
 - Open an issue on GitHub
-- Check our FAQ in the wiki
-- Join our Discord community
 
 ## Changelog
 
