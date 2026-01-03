@@ -1,3 +1,7 @@
+## 1.0.1
+
+- Add github ci and inline documents
+
 ## 1.0.0
 
 - Initial release of app_update_manager
