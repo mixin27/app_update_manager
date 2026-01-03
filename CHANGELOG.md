@@ -1,6 +1,7 @@
 ## 1.0.1
 
 - Add github ci and inline documents
+- bumps: upgrade shared_preferences to `2.5.4`
 
 ## 1.0.0
 
