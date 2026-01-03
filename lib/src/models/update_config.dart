@@ -80,6 +80,7 @@ class UpdateConfig {
     return playStoreId != null || appStoreId != null || customUpdateUrl != null;
   }
 
+  /// Creates a copy of this [UpdateConfig] with the specified properties.
   UpdateConfig copyWith({
     String? playStoreId,
     String? appStoreId,
@@ -138,38 +139,91 @@ enum UpdateStrategy {
 
 /// Analytics events
 enum UpdateEvent {
+  /// Update check started
   checkStarted,
+
+  /// Update check completed
   checkCompleted,
+
+  /// Update check failed
   checkFailed,
+
+  /// Update available
   updateAvailable,
+
+  /// Update not available
   updateNotAvailable,
+
+  /// Update dialog shown
   updateDialogShown,
+
+  /// Update accepted
   updateAccepted,
+
+  /// Update dismissed
   updateDismissed,
+
+  /// Update download started
   updateDownloadStarted,
+
+  /// Update download progress
   updateDownloadProgress,
+
+  /// Update download completed
   updateDownloadCompleted,
+
+  /// Update download failed
   updateDownloadFailed,
+
+  /// Update install started
   updateInstallStarted,
+
+  /// Update install completed
   updateInstallCompleted,
+
+  /// Update install failed
   updateInstallFailed,
 }
 
 /// UI customization for update dialogs
 class UpdateUIConfig {
+  /// Dialog title
   final String? title;
+
+  /// Dialog message
   final String? message;
+
+  /// Update button text
   final String? updateButtonText;
+
+  /// Cancel button text
   final String? cancelButtonText;
+
+  /// Later button text
   final String? laterButtonText;
+
+  /// Dialog background color
   final Color? backgroundColor;
+
+  /// Dialog primary color
   final Color? primaryColor;
+
+  /// Dialog title style
   final TextStyle? titleStyle;
+
+  /// Dialog message style
   final TextStyle? messageStyle;
+
+  /// Whether to show release notes
   final bool showReleaseNotes;
+
+  /// Whether to show file size
   final bool showFileSize;
+
+  /// Custom icon widget
   final Widget? customIcon;
 
+  /// Creates an [UpdateUIConfig] instance.
   const UpdateUIConfig({
     this.title,
     this.message,

@@ -1,8 +1,15 @@
 /// Represents a semantic version (major.minor.patch+build)
 class AppVersion implements Comparable<AppVersion> {
+  /// Major version number
   final int major;
+
+  /// Minor version number
   final int minor;
+
+  /// Patch version number
   final int patch;
+
+  /// Build number
   final String? buildNumber;
 
   /// Creates an [AppVersion] instance.
@@ -57,9 +64,16 @@ class AppVersion implements Comparable<AppVersion> {
     return 0;
   }
 
+  /// Compare to another version
   bool operator >(AppVersion other) => compareTo(other) > 0;
+
+  /// Compare to another version
   bool operator <(AppVersion other) => compareTo(other) < 0;
+
+  /// Compare to another version
   bool operator >=(AppVersion other) => compareTo(other) >= 0;
+
+  /// Compare to another version
   bool operator <=(AppVersion other) => compareTo(other) <= 0;
 
   @override

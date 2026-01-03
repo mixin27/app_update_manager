@@ -5,13 +5,25 @@ import '../models/update_info.dart';
 
 /// Bottom sheet for showing update information
 class UpdateBottomSheet extends StatelessWidget {
+  /// Update information
   final UpdateInfo updateInfo;
+
+  /// UI configuration
   final UpdateUIConfig? uiConfig;
+
+  /// Callback for update action
   final VoidCallback? onUpdate;
+
+  /// Callback for cancel action
   final VoidCallback? onCancel;
+
+  /// Callback for later action
   final VoidCallback? onLater;
+
+  /// Whether the update is forced
   final bool isForced;
 
+  /// Creates an [UpdateBottomSheet] instance.
   const UpdateBottomSheet({
     super.key,
     required this.updateInfo,

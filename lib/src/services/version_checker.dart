@@ -12,9 +12,13 @@ import 'cache_service.dart';
 /// Service for checking app version updates
 class VersionChecker {
   final Dio _dio;
+
+  /// Update configuration
   final UpdateConfig config;
+
   final CacheService _cacheService;
 
+  /// Creates a [VersionChecker] instance.
   VersionChecker({required this.config, Dio? dio, CacheService? cacheService})
     : _dio = dio ?? Dio(),
       _cacheService = cacheService ?? CacheService() {
@@ -165,7 +169,7 @@ class VersionChecker {
           final releaseNotes = appData['releaseNotes'] as String?;
           final fileSizeBytes = appData['fileSizeBytes'] as int?;
 
-          String? releaseDateStr =
+          final String? releaseDateStr =
               appData['currentVersionReleaseDate'] as String?;
           DateTime? releaseDate;
           if (releaseDateStr != null) {

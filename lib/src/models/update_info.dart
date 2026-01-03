@@ -87,6 +87,7 @@ class UpdateInfo {
     }
   }
 
+  /// Creates an [UpdateInfo] instance from a JSON map.
   factory UpdateInfo.fromJson(Map<String, dynamic> json) {
     return UpdateInfo(
       latestVersion: AppVersion.parse(json['latest_version'] as String),
@@ -106,6 +107,7 @@ class UpdateInfo {
     );
   }
 
+  /// Creates a JSON map from this [UpdateInfo] instance.
   Map<String, dynamic> toJson() {
     return {
       'latest_version': latestVersion.toString(),
@@ -129,4 +131,16 @@ class UpdateInfo {
 }
 
 /// Type of update available
-enum UpdateType { none, patch, minor, major }
+enum UpdateType {
+  /// No update available
+  none,
+
+  /// Patch update available
+  patch,
+
+  /// Minor update available
+  minor,
+
+  /// Major update available
+  major,
+}

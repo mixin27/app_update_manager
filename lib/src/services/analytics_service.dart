@@ -3,9 +3,11 @@ import '../models/update_info.dart';
 
 /// Service for tracking update-related analytics
 class AnalyticsService {
+  /// Update configuration
   final UpdateConfig config;
 
-  AnalyticsService({required this.config});
+  /// Creates an [AnalyticsService] instance.
+  const AnalyticsService({required this.config});
 
   /// Track an update event
   void trackEvent(UpdateEvent event, {Map<String, dynamic>? data}) {

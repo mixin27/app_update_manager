@@ -8,9 +8,11 @@ import '../models/update_info.dart';
 
 /// Handles platform-specific update operations
 class PlatformUpdateHandler {
+  /// Update configuration
   final UpdateConfig config;
 
-  PlatformUpdateHandler({required this.config});
+  /// Creates a [PlatformUpdateHandler] instance.
+  const PlatformUpdateHandler({required this.config});
 
   /// Check if in-app update is available (Android only)
   Future<bool> checkInAppUpdateAvailability() async {

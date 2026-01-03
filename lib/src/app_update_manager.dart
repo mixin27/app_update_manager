@@ -3,8 +3,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:in_app_update/in_app_update.dart' as iap;
 import 'package:flutter/material.dart';
+import 'package:in_app_update/in_app_update.dart' as iap;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models/update_config.dart';
