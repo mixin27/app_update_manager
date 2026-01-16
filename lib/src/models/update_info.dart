@@ -23,6 +23,9 @@ class UpdateInfo {
   /// Minimum supported version (versions below this must update)
   final AppVersion? minimumSupportedVersion;
 
+  /// Internal flag to override update availability check
+  final bool? isUpdateAvailableOverride;
+
   /// Release date of the update
   final DateTime? releaseDate;
 
@@ -41,13 +44,15 @@ class UpdateInfo {
     this.isForced = false,
     this.isCritical = false,
     this.minimumSupportedVersion,
+    this.isUpdateAvailableOverride,
     this.releaseDate,
     this.fileSizeBytes,
     this.metadata,
   });
 
   /// Check if an update is available
-  bool get isUpdateAvailable => latestVersion > currentVersion;
+  bool get isUpdateAvailable =>
+      isUpdateAvailableOverride ?? (latestVersion > currentVersion);
 
   /// Check if current version is below minimum supported
   bool get isBelowMinimumVersion {

@@ -1,7 +1,9 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:in_app_update/in_app_update.dart' as iap;
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../models/update_config.dart';
@@ -65,12 +67,12 @@ class VersionChecker {
 
       // Check custom backend first if available
       if (config.customUpdateUrl != null) {
+        log('custom check');
         updateInfo = await _checkCustomBackend(currentVersion, packageInfo);
-      }
-
-      // If no custom backend or failed, fall back to store-specific checks
-      if (updateInfo == null) {
+      } else {
+        // If no custom backend, check store-specific checks
         if (Platform.isAndroid && config.playStoreId != null) {
+          log('playstore check');
           updateInfo = await _checkPlayStore(currentVersion, packageInfo);
         } else if (Platform.isIOS && config.appStoreId != null) {
           updateInfo = await _checkAppStore(currentVersion, packageInfo);
@@ -134,15 +136,55 @@ class VersionChecker {
     }
   }
 
-  /// Check Play Store for updates (via custom API)
+  /// Check Play Store for updates via in_app_update
   Future<UpdateInfo?> _checkPlayStore(
     AppVersion currentVersion,
     PackageInfo packageInfo,
   ) async {
-    // Note: Google Play doesn't provide a public API for version checking
-    // This would require a custom backend that scrapes or uses Play Store API
-    // For now, we rely on in_app_update for Android which checks directly
-    return null;
+    try {
+      final info = await iap.InAppUpdate.checkForUpdate();
+      log('PlayStoreCheckInfo: ${info.updateAvailability}');
+      log('PlayStoreCheckInfo: ${info.availableVersionCode}');
+      log('PlayStoreCheckInfo: ${info.packageName}');
+
+      if (info.updateAvailability == iap.UpdateAvailability.updateAvailable) {
+        // Play Store provides version code (int), not semantic version string
+        // We'll use the version code as the build number for comparison
+        final latestVersion = AppVersion(
+          major: 0,
+          minor: 0,
+          patch: 0,
+          buildNumber: info.availableVersionCode.toString(),
+        );
+        log('LatestVersion: ${latestVersion.toShortString()}');
+
+        // Try to construct a more helpful current version for comparison if possible
+        // but AppVersion.compareTo handles build numbers as ints if they are parsable.
+        final currentAppVersion = AppVersion(
+          major: 0,
+          minor: 0,
+          patch: 0,
+          buildNumber: packageInfo.buildNumber,
+        );
+        log('CurrentVersion: ${currentAppVersion.toShortString()}');
+
+        return UpdateInfo(
+          latestVersion: latestVersion,
+          currentVersion: currentAppVersion,
+          isUpdateAvailableOverride:
+              true, // Internal flag if we want to force it
+          metadata: {
+            'availableVersionCode': info.availableVersionCode,
+            'updatePriority': info.updatePriority,
+            'clientVersionStalenessDays': info.clientVersionStalenessDays,
+          },
+        );
+      }
+      return null;
+    } catch (e) {
+      log('PlayStoreError: ${e.toString()}');
+      return null;
+    }
   }
 
   /// Check App Store for updates

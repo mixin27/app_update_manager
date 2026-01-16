@@ -11,7 +11,7 @@ void main() async {
     config: UpdateConfig(
       playStoreId: 'dev.mixin27.mmcalendar',
       // appStoreId: '123456789',
-      customUpdateUrl: 'http://192.168.100.42:8000/version/check',
+      // customUpdateUrl: 'http://192.168.100.42:8000/version/check',
       strategy: UpdateStrategy.flexible,
       enableBackgroundCheck: true,
       backgroundCheckInterval: 24,
