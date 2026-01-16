@@ -1,6 +1,6 @@
 name: app_update_manager
 description: "A comprehensive Flutter package for managing app updates across Play Store, App Store, and custom backends with flexible update strategies."
-version: 1.0.2
+version: 1.0.1
 homepage: https://github.com/mixin27/app_update_manager
 issue_tracker: https://github.com/mixin27/app_update_manager/issues
 
