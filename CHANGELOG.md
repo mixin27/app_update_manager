@@ -1,3 +1,7 @@
+## 1.0.2
+
+- App update now use `in_app_update` to check update in Android if `customUpdateUrl` not provide.
+
 ## 1.0.1
 
 - Add github ci and inline documents
