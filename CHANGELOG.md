@@ -1,3 +1,8 @@
+## 1.0.2
+
+- Fix background worker compatibility with workmanager 0.9.0+3
+- bumps: downgrade workmanager to `0.8.0` because 0.9.0+3 has an issue with periodic task on Android for 24hr frequency.
+
 ## 1.0.1
 
 - Add github ci and inline documents

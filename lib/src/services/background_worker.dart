@@ -33,7 +33,7 @@ class BackgroundWorker {
             ? NetworkType.unmetered
             : NetworkType.connected,
       ),
-      existingWorkPolicy: ExistingPeriodicWorkPolicy.replace,
+      existingWorkPolicy: ExistingWorkPolicy.replace,
     );
   }
 
